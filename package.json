@@ -16,7 +16,8 @@
 		"build": "tsc",
 		"lint": "eslint \"src/**/*.ts\"",
 		"format": "npx prettier --ignore-path ./.gitignore . --write",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"prepare": "husky install"
 	},
 	"author": {
 		"name": "George-Valentin Hulpoi",
@@ -41,8 +42,14 @@
 		"eslint": "^8.47.0",
 		"eslint-config-prettier": "^9.0.0",
 		"express": "^4.18.2",
+		"husky": "^8.0.3",
+		"lint-staged": "^14.0.0",
 		"payload": "^1.13.4",
 		"prettier": "^2.7.1",
 		"typescript": "^5.1.6"
+	},
+	"lint-staged": {
+		"*.ts": "eslint --cache --fix",
+		"*.--write": "prettier --write"
 	}
 }
