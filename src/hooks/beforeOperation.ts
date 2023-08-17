@@ -1,8 +1,8 @@
-import {CollectionBeforeOperationHook} from 'payload/types';
-import {Forbidden} from 'payload/errors';
+import type { CollectionBeforeOperationHook } from 'payload/types';
+import { Forbidden } from 'payload/errors';
 
 import axios from 'axios';
-import {getClientIp} from 'request-ip';
+import { getClientIp } from 'request-ip';
 import qs from 'qs';
 
 interface Args {
@@ -27,13 +27,13 @@ interface reCAPTCHAResponse {
 }
 
 export const buildBeforeOperationHook =
-	({operations, secret}: Args): CollectionBeforeOperationHook =>
-	async ({args, operation}) => {
+	({ operations, secret }: Args): CollectionBeforeOperationHook =>
+	async ({ args, operation }) => {
 		if (operations.includes(operation)) {
-			const {req} = args;
+			const { req } = args;
 
 			const data = {
-				secret: secret,
+				secret,
 				response: req.get('X-reCAPTCHA-V3'),
 				remoteip: getClientIp(req),
 			};
@@ -46,7 +46,7 @@ export const buildBeforeOperationHook =
 						'Content-Type': 'application/x-www-form-urlencoded',
 					},
 				})
-				.then((response) => response.data);
+				.then((res) => res.data);
 
 			if (!response.success) {
 				throw new Forbidden();

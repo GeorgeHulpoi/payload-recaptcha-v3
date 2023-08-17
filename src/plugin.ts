@@ -1,30 +1,39 @@
-import {Config, Plugin} from 'payload/config';
-import {PluginConfig} from './types';
-import {buildBeforeOperationHook} from './hooks/beforeOperation';
+import type { Config, Plugin } from 'payload/config';
+import type { PluginConfig } from './types';
+import { buildBeforeOperationHook } from './hooks/beforeOperation';
 
 const reCAPTCHAv3: (pluginConfig: PluginConfig) => Plugin =
 	(pluginConfig: PluginConfig) =>
 	(incomingConfig: Config): Config => {
-		const {collections} = incomingConfig;
+		const newConfig = { ...incomingConfig };
 
-		(collections ?? []).forEach((collection) => {
-			if (collection.custom !== undefined && collection.custom.recaptcha !== undefined) {
-				const {beforeOperation, ...rest} = collection.hooks as any;
+		const { collections } = newConfig;
 
-				collection.hooks = {
-					...rest,
-					beforeOperation: [
-						...(beforeOperation ?? []),
-						buildBeforeOperationHook({
-							secret: pluginConfig.secret,
-							operations: collection.custom.recaptcha,
-						}),
-					],
+		newConfig.collections = (collections || []).map((collection) => {
+			if (collection.custom?.recaptcha !== undefined) {
+				const { hooks, ...restOfCollection } = collection;
+
+				const { beforeOperation, ...restOfHooks } = hooks;
+
+				return {
+					...restOfCollection,
+					hooks: {
+						...restOfHooks,
+						beforeOperation: [
+							...(beforeOperation || []),
+							buildBeforeOperationHook({
+								secret: pluginConfig.secret,
+								operations: collection.custom.recaptcha,
+							}),
+						],
+					},
 				};
 			}
+
+			return collection;
 		});
 
-		return incomingConfig;
+		return newConfig;
 	};
 
 export default reCAPTCHAv3;
