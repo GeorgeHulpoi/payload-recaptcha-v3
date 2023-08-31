@@ -17,7 +17,8 @@
 		"build": "tsc",
 		"lint": "eslint src",
 		"lint:fix": "eslint --fix --ext .ts,.tsx src",
-		"test": "cd dev && npm test",
+		"test": "jest src",
+		"test:e2e": "cd dev && npm test",
 		"prepare": "husky install"
 	},
 	"author": {
@@ -56,6 +57,7 @@
 		"payload": "^1.8.2",
 		"prettier": "^2.7.1",
 		"react": "^18.0.0",
+		"ts-jest": "^29.1.1",
 		"typescript": "^4.8.4"
 	},
 	"lint-staged": {
