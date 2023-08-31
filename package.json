@@ -5,6 +5,7 @@
 	"keywords": [
 		"payload",
 		"cms",
+		"plugin",
 		"recaptcha",
 		"v3"
 	],
@@ -13,19 +14,26 @@
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"package.json",
+		"README",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "tsc",
 		"lint": "eslint src",
 		"lint:fix": "eslint --fix --ext .ts,.tsx src",
 		"test": "jest src",
 		"test:e2e": "cd dev && npm test",
+		"clean": "rimraf dist",
 		"prepare": "husky install"
 	},
 	"author": {
 		"name": "George-Valentin Hulpoi",
 		"url": "https://gvhdev.com"
 	},
-	"license": "ISC",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/GeorgeHulpoi/payload-recaptcha-v3.git"
