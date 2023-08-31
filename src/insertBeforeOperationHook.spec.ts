@@ -78,7 +78,7 @@ describe('insertBeforeOperationHook', () => {
 		);
 
 		// Search for the `testCollection` in the `newConfig`
-		const newTestCollection = newConfig.collections.find((c) => c.slug === 'test');
+		const newTestCollection = newConfig.collections!.find((c) => c.slug === 'test');
 
 		// It should call HookBuilder.build
 		expect(build).toHaveBeenCalledTimes(1);

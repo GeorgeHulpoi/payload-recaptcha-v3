@@ -30,7 +30,7 @@ export class BeforeOperationHookBuilder {
 	}
 
 	build(): CollectionBeforeOperationHook {
-		const operations = [...this.operations];
+		const operations = [...(this.operations || [])];
 		const secret = this.secret;
 
 		return async ({ args, operation }) => {
