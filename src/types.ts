@@ -3,7 +3,7 @@ export interface reCAPTCHAPluginConfig {
 	errorHandler?: reCAPTCHAErrorHandler;
 }
 
-export type reCAPTCHAErrorHandler = (response: reCAPTCHAResponse) => void;
+export type reCAPTCHAErrorHandler = (response?: reCAPTCHAResponse) => void;
 
 export type reCAPTCHAOperations =
 	| 'create'

@@ -37,6 +37,12 @@ export class BeforeOperationHookBuilder {
 			if (operations.includes(operation)) {
 				const { req } = args;
 
+				const token = req.get('X-reCAPTCHA-V3');
+
+				if (token === undefined) {
+					this.errorHandler();
+				}
+
 				const data = {
 					secret,
 					response: req.get('X-reCAPTCHA-V3'),

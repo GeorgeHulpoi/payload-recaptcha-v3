@@ -13,7 +13,7 @@ export default function insertBeforeOperationHook(
 		if (collection.custom?.recaptcha !== undefined) {
 			const { hooks, ...restOfCollection } = collection;
 
-			const { beforeOperation, ...restOfHooks } = hooks;
+			const { beforeOperation, ...restOfHooks } = hooks || {};
 
 			const hook = hookBuilder.setOperations(collection.custom?.recaptcha).build();
 
