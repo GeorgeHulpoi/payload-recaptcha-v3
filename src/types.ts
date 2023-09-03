@@ -25,7 +25,9 @@ export type reCAPTCHAErrorCode =
 
 export interface reCAPTCHAResponse {
 	success: boolean;
-	challenge_ts: number; // timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
-	hostname: string; // the hostname of the site where the reCAPTCHA was solved
+	score: number;
+	action: string;
+	challenge_ts: number;
+	hostname: string;
 	'error-codes'?: reCAPTCHAErrorCode[];
 }
