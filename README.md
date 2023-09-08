@@ -57,7 +57,16 @@ export const Orders: CollectionConfig = {
 	fields: [],
 	// ... rest of your config
 	custom: {
-		recaptcha: ['create', 'update'],
+		recaptcha: [
+			{
+				name: 'create',
+				action: 'submit',
+			},
+			{
+				name: 'update',
+				action: 'modify',
+			},
+		],
 	},
 };
 
