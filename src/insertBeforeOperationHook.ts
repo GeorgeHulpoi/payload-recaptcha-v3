@@ -1,5 +1,6 @@
 import type { Config } from 'payload/config';
 import type { BeforeOperationHookBuilder } from './beforeOperationHookBuilder';
+import type { reCAPTCHAOperation } from './types';
 
 export default function insertBeforeOperationHook(
 	incomingConfig: Config,
@@ -15,7 +16,8 @@ export default function insertBeforeOperationHook(
 
 			const { beforeOperation, ...restOfHooks } = hooks || {};
 
-			const hook = hookBuilder.setOperations(collection.custom?.recaptcha).build();
+			const operations: reCAPTCHAOperation[] = collection.custom?.recaptcha;
+			const hook = hookBuilder.setOperations(operations).build();
 
 			return {
 				...restOfCollection,

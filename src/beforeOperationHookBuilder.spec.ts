@@ -4,6 +4,7 @@ import qs from 'qs';
 
 import { APIError, Forbidden } from 'payload/errors';
 import { BeforeOperationHookBuilder } from './beforeOperationHookBuilder';
+import { reCAPTCHAOperation } from './types';
 
 jest.mock('request-ip', () => {
 	return {
@@ -27,19 +28,41 @@ describe('BeforeOperationHookBuilder', () => {
 	test('should set operations', () => {
 		const builder = new BeforeOperationHookBuilder();
 		expect((builder as any).operations).toBeUndefined();
-		const operations = ['a', 'b'];
+		const operations: reCAPTCHAOperation[] = [
+			{
+				name: 'create',
+				action: 'a',
+			},
+			{
+				name: 'update',
+				action: 'b',
+			},
+		];
 		builder.setOperations(operations);
 		expect((builder as any).operations).toEqual(operations);
 
 		// Should be a refference to the array
-		operations.push('c');
-		expect((builder as any).operations).toContain('c');
+		operations.push({
+			name: 'delete',
+			action: 'c',
+		});
+		expect((builder as any).operations).toContainEqual({
+			name: 'delete',
+			action: 'c',
+		});
 	});
 
 	test('should create function with the right scope 1', () => {
-		const builder = new BeforeOperationHookBuilder()
-			.setSecret('secret')
-			.setOperations(['create', 'delete']);
+		const builder = new BeforeOperationHookBuilder().setSecret('secret').setOperations([
+			{
+				name: 'create',
+				action: 'create',
+			},
+			{
+				name: 'delete',
+				action: 'delete',
+			},
+		]);
 		const hook = builder.build();
 
 		expect(hook).toBeDefined();
@@ -48,6 +71,7 @@ describe('BeforeOperationHookBuilder', () => {
 		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
 			Promise.resolve({
 				data: {
+					action: 'create',
 					success: true,
 				},
 			}),
@@ -77,9 +101,16 @@ describe('BeforeOperationHookBuilder', () => {
 	});
 
 	test('should create function with the right scope 2', () => {
-		const builder = new BeforeOperationHookBuilder()
-			.setSecret('secret')
-			.setOperations(['create', 'delete']);
+		const builder = new BeforeOperationHookBuilder().setSecret('secret').setOperations([
+			{
+				name: 'create',
+				action: 'create',
+			},
+			{
+				name: 'delete',
+				action: 'delete',
+			},
+		]);
 		const hook = builder.build();
 
 		expect(hook).toBeDefined();
@@ -109,9 +140,16 @@ describe('BeforeOperationHookBuilder', () => {
 	});
 
 	test('should create function with the right scope 3', () => {
-		const builder = new BeforeOperationHookBuilder()
-			.setSecret('secret')
-			.setOperations(['create', 'delete']);
+		const builder = new BeforeOperationHookBuilder().setSecret('secret').setOperations([
+			{
+				name: 'create',
+				action: 'create_action',
+			},
+			{
+				name: 'delete',
+				action: 'delete_action',
+			},
+		]);
 		const hook = builder.build();
 
 		expect(hook).toBeDefined();
@@ -120,6 +158,7 @@ describe('BeforeOperationHookBuilder', () => {
 		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
 			Promise.resolve({
 				data: {
+					action: 'delete_action',
 					success: true,
 				},
 			}),
@@ -149,15 +188,19 @@ describe('BeforeOperationHookBuilder', () => {
 	});
 
 	test('should return args', async () => {
-		const builder = new BeforeOperationHookBuilder()
-			.setSecret('secret')
-			.setOperations(['create']);
+		const builder = new BeforeOperationHookBuilder().setSecret('secret').setOperations([
+			{
+				name: 'create',
+				action: 'action',
+			},
+		]);
 
 		const hook = builder.build();
 
 		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
 			Promise.resolve({
 				data: {
+					action: 'action',
 					success: true,
 				},
 			}),
@@ -192,15 +235,19 @@ describe('BeforeOperationHookBuilder', () => {
 	});
 
 	test('should call the default error handler', async () => {
-		const builder = new BeforeOperationHookBuilder()
-			.setSecret('secret')
-			.setOperations(['create']);
+		const builder = new BeforeOperationHookBuilder().setSecret('secret').setOperations([
+			{
+				name: 'create',
+				action: 'action',
+			},
+		]);
 
 		const hook = builder.build();
 
 		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
 			Promise.resolve({
 				data: {
+					action: 'action',
 					success: false,
 				},
 			}),
@@ -231,7 +278,12 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const builder = new BeforeOperationHookBuilder()
 			.setSecret('secret')
-			.setOperations(['create'])
+			.setOperations([
+				{
+					name: 'create',
+					action: 'action',
+				},
+			])
 			.setErrorHandler(errorHandler);
 
 		const hook = builder.build();
@@ -239,6 +291,7 @@ describe('BeforeOperationHookBuilder', () => {
 		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
 			Promise.resolve({
 				data: {
+					action: 'action',
 					success: false,
 				},
 			}),
@@ -260,5 +313,42 @@ describe('BeforeOperationHookBuilder', () => {
 				operation: 'create',
 			} as any),
 		).rejects.toBeInstanceOf(APIError);
+	});
+
+	test('mistaken action should throw Forbidden', async () => {
+		const builder = new BeforeOperationHookBuilder().setSecret('secret').setOperations([
+			{
+				name: 'create',
+				action: 'action',
+			},
+		]);
+
+		const hook = builder.build();
+
+		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+			Promise.resolve({
+				data: {
+					action: 'wrong_action',
+					success: true,
+				},
+			}),
+		);
+
+		const getClientIpFn = jest
+			.spyOn(requestIp, 'getClientIp')
+			.mockImplementation((req: any) => '127.0.0.1');
+
+		const args = {
+			req: {
+				get: () => 'token',
+			},
+		};
+
+		expect(
+			hook({
+				args,
+				operation: 'create',
+			} as any),
+		).rejects.toBeInstanceOf(Forbidden);
 	});
 });

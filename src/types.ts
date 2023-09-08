@@ -31,3 +31,8 @@ export interface reCAPTCHAResponse {
 	hostname: string;
 	'error-codes'?: reCAPTCHAErrorCode[];
 }
+
+export interface reCAPTCHAOperation {
+	name: reCAPTCHAOperations;
+	action: string;
+}

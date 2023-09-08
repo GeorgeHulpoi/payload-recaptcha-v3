@@ -5,11 +5,11 @@ import axios from 'axios';
 import qs from 'qs';
 import { getClientIp } from 'request-ip';
 
-import type { reCAPTCHAErrorHandler, reCAPTCHAResponse } from './types';
+import type { reCAPTCHAErrorHandler, reCAPTCHAOperation, reCAPTCHAResponse } from './types';
 
 export class BeforeOperationHookBuilder {
 	private secret?: string;
-	private operations?: string[];
+	private operations?: reCAPTCHAOperation[];
 	private errorHandler: reCAPTCHAErrorHandler = () => {
 		throw new Forbidden();
 	};
@@ -19,7 +19,7 @@ export class BeforeOperationHookBuilder {
 		return this;
 	}
 
-	setOperations(operations: string[]): BeforeOperationHookBuilder {
+	setOperations(operations: reCAPTCHAOperation[]): BeforeOperationHookBuilder {
 		this.operations = operations;
 		return this;
 	}
@@ -34,7 +34,9 @@ export class BeforeOperationHookBuilder {
 		const secret = this.secret;
 
 		return async ({ args, operation }) => {
-			if (operations.includes(operation)) {
+			const op = operations.find((o) => 'name' in o && 'action' in o && o.name === operation);
+
+			if (op !== undefined) {
 				const { req } = args;
 
 				const token = req.get('X-reCAPTCHA-V3');
@@ -45,7 +47,7 @@ export class BeforeOperationHookBuilder {
 
 				const data = {
 					secret,
-					response: req.get('X-reCAPTCHA-V3'),
+					response: token,
 					remoteip: getClientIp(req),
 				};
 
@@ -60,6 +62,10 @@ export class BeforeOperationHookBuilder {
 					.then((res) => res.data);
 
 				if (!response.success) {
+					this.errorHandler(response);
+				}
+
+				if (response.action !== op.action) {
 					this.errorHandler(response);
 				}
 			}
