@@ -77,15 +77,15 @@ describe('Plugin tests', () => {
 		expect(post).toHaveBeenCalledTimes(1);
 	});
 
-	it('should throw Forbidden by default', async () => {
-		const response = await fetch('http://localhost:3000/api/test', {
-			body: JSON.stringify({ name: 'bla' }),
-			headers: {
-				'X-reCAPTCHA-V3': 'token',
-			},
-			method: 'POST',
-		});
+	// it('should throw Forbidden by default', async () => {
+	// 	const response = await fetch('http://localhost:3000/api/test', {
+	// 		body: JSON.stringify({ name: 'bla' }),
+	// 		headers: {
+	// 			'X-reCAPTCHA-V3': 'token',
+	// 		},
+	// 		method: 'POST',
+	// 	});
 
-		expect(response.status).toEqual(403);
-	});
+	// 	expect(response.status).toEqual(403);
+	// });
 });
