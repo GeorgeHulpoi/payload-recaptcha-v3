@@ -83,6 +83,7 @@ describe('BeforeOperationHookBuilder', () => {
 		hook({
 			args: {
 				req: {
+					payloadAPI: 'REST',
 					get: () => '',
 				},
 			},
@@ -130,6 +131,7 @@ describe('BeforeOperationHookBuilder', () => {
 		hook({
 			args: {
 				req: {
+					payloadAPI: 'REST',
 					get: () => '',
 				},
 			},
@@ -170,6 +172,7 @@ describe('BeforeOperationHookBuilder', () => {
 		hook({
 			args: {
 				req: {
+					payloadAPI: 'REST',
 					get: () => '',
 				},
 			},
@@ -212,6 +215,7 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const args = {
 			req: {
+				payloadAPI: 'REST',
 				get: () => 'token',
 			},
 		};
@@ -259,6 +263,7 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const args = {
 			req: {
+				payloadAPI: 'REST',
 				get: () => 'token',
 			},
 		};
@@ -303,6 +308,7 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const args = {
 			req: {
+				payloadAPI: 'REST',
 				get: () => 'token',
 			},
 		};
@@ -340,6 +346,7 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const args = {
 			req: {
+				payloadAPI: 'REST',
 				get: () => 'token',
 			},
 		};
