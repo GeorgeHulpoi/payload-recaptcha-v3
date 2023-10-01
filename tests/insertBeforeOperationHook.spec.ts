@@ -1,7 +1,7 @@
 import type { Config } from 'payload/config';
 import type { CollectionConfig } from 'payload/types';
-import insertBeforeOperationHook from './insertBeforeOperationHook';
-import { BeforeOperationHookBuilder } from './beforeOperationHookBuilder';
+import insertBeforeOperationHook from '../src/insertBeforeOperationHook';
+import { BeforeOperationHookBuilder } from '../src/beforeOperationHookBuilder';
 
 describe('insertBeforeOperationHook', () => {
 	let incomingConfig: Config;

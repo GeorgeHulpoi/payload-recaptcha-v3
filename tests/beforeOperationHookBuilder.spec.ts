@@ -3,8 +3,8 @@ import * as requestIp from 'request-ip';
 import qs from 'qs';
 
 import { APIError, Forbidden } from 'payload/errors';
-import { BeforeOperationHookBuilder } from './beforeOperationHookBuilder';
-import { reCAPTCHAOperation } from './types';
+import { BeforeOperationHookBuilder } from '../src/beforeOperationHookBuilder';
+import { reCAPTCHAOperation } from '../src/types';
 
 jest.mock('request-ip', () => {
 	return {

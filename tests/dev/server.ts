@@ -4,11 +4,6 @@ import payload from 'payload';
 
 const app = express();
 
-// Redirect root to Admin panel
-app.get('/', (_, res) => {
-	res.redirect('/admin');
-});
-
 export const start = async (args: { local: boolean } = { local: false }): Promise<Server> => {
 	const { local } = args;
 	await payload.init({
