@@ -39,34 +39,40 @@ export class BeforeOperationHookBuilder {
 			if (op !== undefined) {
 				const { req } = args;
 
-				const token = req.get('X-reCAPTCHA-V3');
+				if (req && req.payloadAPI === 'REST') {
+					const token = req.get('X-reCAPTCHA-V3');
 
-				if (token === undefined) {
-					this.errorHandler();
-				}
+					if (token === undefined) {
+						this.errorHandler();
+					}
 
-				const data = {
-					secret,
-					response: token,
-					remoteip: getClientIp(req),
-				};
+					const data = {
+						secret,
+						response: token,
+						remoteip: getClientIp(req),
+					};
 
-				// reCAPTCHA accepts only x-www-form-urlencoded
-				// https://stackoverflow.com/a/52416003/5796307
-				const response: reCAPTCHAResponse = await axios
-					.post('https://www.google.com/recaptcha/api/siteverify', qs.stringify(data), {
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded',
-						},
-					})
-					.then((res) => res.data);
+					// reCAPTCHA accepts only x-www-form-urlencoded
+					// https://stackoverflow.com/a/52416003/5796307
+					const response: reCAPTCHAResponse = await axios
+						.post(
+							'https://www.google.com/recaptcha/api/siteverify',
+							qs.stringify(data),
+							{
+								headers: {
+									'Content-Type': 'application/x-www-form-urlencoded',
+								},
+							},
+						)
+						.then((res) => res.data);
 
-				if (!response.success) {
-					this.errorHandler(response);
-				}
+					if (!response.success) {
+						this.errorHandler(response);
+					}
 
-				if (response.action !== op.action) {
-					this.errorHandler(response);
+					if (response.action !== op.action) {
+						this.errorHandler(response);
+					}
 				}
 			}
 
