@@ -70,6 +70,7 @@ describe('Plugin tests', () => {
 			body: JSON.stringify({ name: 'bla' }),
 			headers: {
 				'X-reCAPTCHA-V3': 'token',
+				'Content-Type': 'application/json',
 			},
 			method: 'POST',
 		});

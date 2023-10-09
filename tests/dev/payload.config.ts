@@ -1,18 +1,23 @@
 import path from 'path';
 
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
+import { slateEditor } from '@payloadcms/richtext-slate';
 import { buildConfig } from 'payload/config';
+import type { RichTextAdapter } from 'payload/types';
 
 import reCAPTCHAv3 from '../../src';
 import { Test } from './collections/Test';
 
-// @ts-expect-error
 export default buildConfig({
 	serverURL: 'http://localhost:3000',
 	collections: [Test],
+	admin: {
+		disable: true,
+	},
 	db: mongooseAdapter({
 		url: process.env.MONGODB_URI!,
 	}),
+	editor: slateEditor({}) as RichTextAdapter,
 	typescript: {
 		outputFile: path.resolve(__dirname, 'payload-types.ts'),
 	},
