@@ -4,7 +4,7 @@ import insertBeforeOperationHook from '../src/insertBeforeOperationHook';
 import { BeforeOperationHookBuilder } from '../src/beforeOperationHookBuilder';
 
 describe('insertBeforeOperationHook', () => {
-	let incomingConfig: Config;
+	let incomingConfig: Partial<Config>;
 	let testCollection: CollectionConfig;
 	let test2Collection: CollectionConfig;
 	let test3Collection: CollectionConfig;
@@ -48,7 +48,7 @@ describe('insertBeforeOperationHook', () => {
 		const newHook = () => {};
 		const hookBuilder = new BeforeOperationHookBuilder();
 		const build = jest.spyOn(hookBuilder, 'build').mockReturnValue(newHook);
-		const newConfig = insertBeforeOperationHook(incomingConfig, hookBuilder);
+		const newConfig = insertBeforeOperationHook(incomingConfig as any, hookBuilder);
 
 		// It should not modify the other properties
 		expect(newConfig).toEqual(
