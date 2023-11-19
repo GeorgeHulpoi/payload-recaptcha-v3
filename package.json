@@ -71,5 +71,8 @@
 	"lint-staged": {
 		"*.ts": "eslint --cache --fix",
 		"*.--write": "prettier --write"
+	},
+	"engines": {
+		"node": ">=18.0.0"
 	}
 }
