@@ -8,12 +8,7 @@ A plugin for [Payload](https://github.com/payloadcms/payload) to protect collect
 
 ## Installation
 
-Please install the plugin version according to the Payload version.
-
-| Plugin version | Payload Version |
-| -------------- | --------------- |
-| 1.0.x          | 1.x.x           |
-| 1.1.x          | 2.x.x           |
+Please install the plugin version according to the Payload version. **The major version of the plugin must match the major version of the Payload**.
 
 ```shell
 yarn add payload-recaptcha-v3
