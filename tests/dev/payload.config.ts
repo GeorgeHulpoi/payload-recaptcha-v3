@@ -10,6 +10,7 @@ export default buildConfig({
 	admin: {
 		disable: true,
 	},
+	telemetry: false,
 	typescript: {
 		outputFile: path.resolve(__dirname, 'payload-types.ts'),
 	},

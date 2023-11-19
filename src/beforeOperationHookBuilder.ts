@@ -1,11 +1,10 @@
 import { Forbidden } from 'payload/errors';
 import type { CollectionBeforeOperationHook } from 'payload/types';
 
-import axios from 'axios';
 import qs from 'qs';
 import { getClientIp } from 'request-ip';
 
-import type { reCAPTCHAErrorHandler, reCAPTCHAOperation, reCAPTCHAResponse } from './types';
+import type { reCAPTCHAErrorHandler, reCAPTCHAOperation } from './types';
 
 export class BeforeOperationHookBuilder {
 	private secret?: string;
@@ -54,23 +53,21 @@ export class BeforeOperationHookBuilder {
 
 					// reCAPTCHA accepts only x-www-form-urlencoded
 					// https://stackoverflow.com/a/52416003/5796307
-					const response: reCAPTCHAResponse = await axios
-						.post(
-							'https://www.google.com/recaptcha/api/siteverify',
-							qs.stringify(data),
-							{
-								headers: {
-									'Content-Type': 'application/x-www-form-urlencoded',
-								},
+					const response = await fetch(
+						'https://www.google.com/recaptcha/api/siteverify',
+						{
+							method: 'POST',
+							body: qs.stringify(data),
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded',
 							},
-						)
-						.then((res) => res.data);
+						},
+					)
+						.then((res) => res.json())
+						.then((res) => res.data)
+						.catch(() => undefined);
 
-					if (!response.success) {
-						this.errorHandler(response);
-					}
-
-					if (response.action !== op.action) {
+					if (!response || response.success === false || response.action !== op.action) {
 						this.errorHandler(response);
 					}
 				}
