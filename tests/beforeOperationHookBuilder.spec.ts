@@ -1,4 +1,3 @@
-import axios from 'axios';
 import * as requestIp from 'request-ip';
 import qs from 'qs';
 
@@ -67,14 +66,17 @@ describe('BeforeOperationHookBuilder', () => {
 
 		expect(hook).toBeDefined();
 
-		// We can't access the function scope, but we can test the axios function
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		// We can't access the function scope, but we can test the fetch function
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					action: 'create',
-					success: true,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'create',
+						success: true,
+					},
+				}),
+			} as any),
 		);
 		const getClientIpFn = jest
 			.spyOn(requestIp, 'getClientIp')
@@ -92,12 +94,13 @@ describe('BeforeOperationHookBuilder', () => {
 
 		expect(postFn).toHaveBeenCalledWith(
 			expect.anything(),
-			qs.stringify({
-				secret: 'secret',
-				response: '',
-				remoteip: '',
+			expect.objectContaining({
+				body: qs.stringify({
+					secret: 'secret',
+					response: '',
+					remoteip: '',
+				}),
 			}),
-			expect.anything(),
 		);
 	});
 
@@ -117,13 +120,17 @@ describe('BeforeOperationHookBuilder', () => {
 		expect(hook).toBeDefined();
 
 		// We can't access the function scope, but we can test the axios function
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					success: true,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						success: true,
+					},
+				}),
+			} as any),
 		);
+
 		const getClientIpFn = jest
 			.spyOn(requestIp, 'getClientIp')
 			.mockImplementation((req: any) => '');
@@ -157,14 +164,18 @@ describe('BeforeOperationHookBuilder', () => {
 		expect(hook).toBeDefined();
 
 		// We can't access the function scope, but we can test the axios function
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					action: 'delete_action',
-					success: true,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'delete_action',
+						success: true,
+					},
+				}),
+			} as any),
 		);
+
 		const getClientIpFn = jest
 			.spyOn(requestIp, 'getClientIp')
 			.mockImplementation((req: any) => '');
@@ -181,12 +192,13 @@ describe('BeforeOperationHookBuilder', () => {
 
 		expect(postFn).toHaveBeenCalledWith(
 			expect.anything(),
-			qs.stringify({
-				secret: 'secret',
-				response: '',
-				remoteip: '',
+			expect.objectContaining({
+				body: qs.stringify({
+					secret: 'secret',
+					response: '',
+					remoteip: '',
+				}),
 			}),
-			expect.anything(),
 		);
 	});
 
@@ -200,13 +212,16 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const hook = builder.build();
 
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					action: 'action',
-					success: true,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'action',
+						success: true,
+					},
+				}),
+			} as any),
 		);
 
 		const getClientIpFn = jest
@@ -227,12 +242,13 @@ describe('BeforeOperationHookBuilder', () => {
 
 		expect(postFn).toHaveBeenCalledWith(
 			expect.anything(),
-			qs.stringify({
-				secret: 'secret',
-				response: 'token',
-				remoteip: '127.0.0.1',
+			expect.objectContaining({
+				body: qs.stringify({
+					secret: 'secret',
+					response: 'token',
+					remoteip: '127.0.0.1',
+				}),
 			}),
-			expect.anything(),
 		);
 
 		expect(ret).toEqual(args);
@@ -248,13 +264,16 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const hook = builder.build();
 
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					action: 'action',
-					success: false,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'action',
+						success: false,
+					},
+				}),
+			} as any),
 		);
 
 		const getClientIpFn = jest
@@ -293,13 +312,16 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const hook = builder.build();
 
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					action: 'action',
-					success: false,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'action',
+						success: false,
+					},
+				}),
+			} as any),
 		);
 
 		const getClientIpFn = jest
@@ -331,13 +353,16 @@ describe('BeforeOperationHookBuilder', () => {
 
 		const hook = builder.build();
 
-		const postFn = jest.spyOn(axios, 'post').mockImplementation(() =>
+		const postFn = jest.spyOn(global, 'fetch').mockImplementation(() =>
 			Promise.resolve({
-				data: {
-					action: 'wrong_action',
-					success: true,
-				},
-			}),
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'wrong_action',
+						success: true,
+					},
+				}),
+			} as any),
 		);
 
 		const getClientIpFn = jest

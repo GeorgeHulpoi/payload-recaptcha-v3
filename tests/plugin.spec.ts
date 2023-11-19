@@ -1,4 +1,3 @@
-import axios from 'axios';
 import type { Server } from 'http';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import fetch from 'node-fetch';
@@ -30,8 +29,8 @@ describe('Plugin tests', () => {
 		server.close();
 	});
 
-	it("shouldn't call Google reCAPTCHA when using Local", async () => {
-		const post = jest.spyOn(axios, 'post');
+	it("shouldn't call Google reCAPTCHA while using Local", async () => {
+		const post = jest.spyOn(global, 'fetch');
 
 		await payload.create({
 			collection: 'test',
@@ -44,7 +43,7 @@ describe('Plugin tests', () => {
 	});
 
 	it("shouldn't call Google reCAPTCHA when using GraphQL", async () => {
-		const post = jest.spyOn(axios, 'post');
+		const post = jest.spyOn(global, 'fetch');
 
 		await fetch('http://localhost:3000/api/graphql', {
 			body: JSON.stringify({
@@ -57,20 +56,22 @@ describe('Plugin tests', () => {
 	});
 
 	it('should call Google reCAPTCHA when using REST', async () => {
-		const post = jest.spyOn(axios, 'post').mockImplementation(() => {
-			return Promise.resolve({
-				data: {
-					action: 'create_test',
-					success: true,
-				},
-			});
-		});
+		const post = jest.spyOn(global, 'fetch').mockImplementation(() =>
+			Promise.resolve({
+				ok: true,
+				json: () => ({
+					data: {
+						action: 'create_test',
+						success: true,
+					},
+				}),
+			} as any),
+		);
 
 		await fetch('http://localhost:3000/api/test', {
 			body: JSON.stringify({ name: 'bla' }),
 			headers: {
 				'X-reCAPTCHA-V3': 'token',
-				'Content-Type': 'application/json',
 			},
 			method: 'POST',
 		});

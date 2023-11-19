@@ -13,6 +13,7 @@ export default buildConfig({
 	admin: {
 		disable: true,
 	},
+	telemetry: false,
 	db: mongooseAdapter({
 		url: process.env.MONGODB_URI!,
 	}),
