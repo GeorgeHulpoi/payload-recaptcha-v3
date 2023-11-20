@@ -4,7 +4,7 @@ import type { CollectionBeforeOperationHook } from 'payload/types';
 import qs from 'qs';
 import { getClientIp } from 'request-ip';
 
-import type { reCAPTCHAErrorHandler, reCAPTCHAOperation, reCAPTCHAResponse } from './types';
+import type { reCAPTCHAErrorHandler, reCAPTCHAOperation } from './types';
 
 export class BeforeOperationHookBuilder {
 	private secret?: string;
@@ -64,7 +64,6 @@ export class BeforeOperationHookBuilder {
 						},
 					)
 						.then((res) => res.json())
-						.then((res) => res.data)
 						.catch(() => undefined);
 
 					if (!response || response.success === false || response.action !== op.action) {

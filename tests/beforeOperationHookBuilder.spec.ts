@@ -71,10 +71,8 @@ describe('BeforeOperationHookBuilder', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'create',
-						success: true,
-					},
+					action: 'create',
+					success: true,
 				}),
 			} as any),
 		);
@@ -168,10 +166,8 @@ describe('BeforeOperationHookBuilder', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'delete_action',
-						success: true,
-					},
+					action: 'delete_action',
+					success: true,
 				}),
 			} as any),
 		);
@@ -216,10 +212,8 @@ describe('BeforeOperationHookBuilder', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'action',
-						success: true,
-					},
+					action: 'action',
+					success: true,
 				}),
 			} as any),
 		);
@@ -268,10 +262,8 @@ describe('BeforeOperationHookBuilder', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'action',
-						success: false,
-					},
+					action: 'action',
+					success: false,
 				}),
 			} as any),
 		);
@@ -316,10 +308,8 @@ describe('BeforeOperationHookBuilder', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'action',
-						success: false,
-					},
+					action: 'action',
+					success: false,
 				}),
 			} as any),
 		);
@@ -357,10 +347,8 @@ describe('BeforeOperationHookBuilder', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'wrong_action',
-						success: true,
-					},
+					action: 'wrong_action',
+					success: true,
 				}),
 			} as any),
 		);

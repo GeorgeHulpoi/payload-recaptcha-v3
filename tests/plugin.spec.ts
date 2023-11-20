@@ -1,8 +1,8 @@
 import type { Server } from 'http';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import fetch from 'node-fetch';
 import path from 'path';
 import payload from 'payload';
+import axios from 'axios';
 
 import { start } from './dev/server';
 
@@ -45,11 +45,8 @@ describe('Plugin tests', () => {
 	it("shouldn't call Google reCAPTCHA when using GraphQL", async () => {
 		const post = jest.spyOn(global, 'fetch');
 
-		await fetch('http://localhost:3000/api/graphql', {
-			body: JSON.stringify({
-				query: `mutation { createTest(data: {name: "abc"}) { id, name } }`,
-			}),
-			method: 'POST',
+		await axios.post('http://localhost:3000/api/graphql', {
+			query: `mutation { createTest(data: {name: "abc"}) { id, name } }`,
 		});
 
 		expect(post).toHaveBeenCalledTimes(0);
@@ -60,33 +57,35 @@ describe('Plugin tests', () => {
 			Promise.resolve({
 				ok: true,
 				json: () => ({
-					data: {
-						action: 'create_test',
-						success: true,
-					},
+					action: 'create_test',
+					success: true,
 				}),
 			} as any),
 		);
 
-		await fetch('http://localhost:3000/api/test', {
-			body: JSON.stringify({ name: 'bla' }),
-			headers: {
-				'X-reCAPTCHA-V3': 'token',
+		await axios.post(
+			'http://localhost:3000/api/test',
+			{ name: 'bla' },
+			{
+				headers: {
+					'X-reCAPTCHA-V3': 'token',
+				},
 			},
-			method: 'POST',
-		});
+		);
 
 		expect(post).toHaveBeenCalledTimes(1);
 	});
 
 	// it('should throw Forbidden by default', async () => {
-	// 	const response = await fetch('http://localhost:3000/api/test', {
-	// 		body: JSON.stringify({ name: 'bla' }),
-	// 		headers: {
-	// 			'X-reCAPTCHA-V3': 'token',
+	// 	const response = await axios.post(
+	// 		'http://localhost:3000/api/test',
+	// 		{ name: 'bla' },
+	// 		{
+	// 			headers: {
+	// 				'X-reCAPTCHA-V3': 'token',
+	// 			},
 	// 		},
-	// 		method: 'POST',
-	// 	});
+	// 	);
 
 	// 	expect(response.status).toEqual(403);
 	// });
