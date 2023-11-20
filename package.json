@@ -1,6 +1,6 @@
 {
 	"name": "payload-recaptcha-v3",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "This library implements a collection protection in Payload CMS using Google reCAPTCHA v3.",
 	"keywords": [
 		"payload",
@@ -52,6 +52,7 @@
 		"@types/qs": "^6.9.7",
 		"@typescript-eslint/eslint-plugin": "5.51.0",
 		"@typescript-eslint/parser": "5.51.0",
+		"axios": "^1.6.2",
 		"dotenv": "^8.2.0",
 		"eslint": "^8.19.0",
 		"eslint-config-airbnb-base": "^15.0.0",
@@ -63,6 +64,7 @@
 		"jest": "^29.6.2",
 		"lint-staged": "^14.0.0",
 		"mongodb-memory-server": "^8.15.0",
+		"mongoose": "^8.0.1",
 		"payload": "^1.8.2",
 		"prettier": "^2.7.1",
 		"ts-jest": "^29.1.1",

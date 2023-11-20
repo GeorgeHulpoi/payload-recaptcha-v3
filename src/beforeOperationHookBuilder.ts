@@ -64,7 +64,6 @@ export class BeforeOperationHookBuilder {
 						},
 					)
 						.then((res) => res.json())
-						.then((res) => res.data)
 						.catch(() => undefined);
 
 					if (!response || response.success === false || response.action !== op.action) {
