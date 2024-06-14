@@ -36,6 +36,27 @@ const config = buildConfig({
 export default config;
 ```
 
+Add / extend the `express` configuration of your [Payload config](https://payloadcms.com/docs/configuration/overview), and set up the required `X-reCAPTHCA-V3` key in the `Access-Control-Allow-Headers` in the [postMiddleware](https://payloadcms.com/docs/configuration/express#custom-middleware) to avoid CORS errors:
+```ts
+
+const config = buildConfig({
+	// ... rest of your config (including the recaptcha plugin setup)
+	express: {
+	    postMiddleware: [
+	        (_req, res, next) => {
+	            const existingHeaders = res.getHeader("Access-Control-Allow-Headers");
+	            res.header(
+	                "Access-Control-Allow-Headers",
+	                existingHeaders + ", X-reCAPTCHA-V3"
+	            );
+	            next();
+	        },
+	    ],
+    },
+});
+
+```
+
 ### Plugin Options
 
 -   `secret`: string
