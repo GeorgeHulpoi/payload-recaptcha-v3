@@ -1,5 +1,4 @@
-import reCAPTCHAv3 from './plugin';
-
-export * from './types';
+import reCAPTCHAv3 from './plugin.js';
+export * from './types.js';
 
 export default reCAPTCHAv3;
