@@ -1,15 +1,63 @@
-import type { Config, Plugin } from 'payload/config';
-import type { reCAPTCHAPluginConfig } from './types';
+import { type Config, type Plugin, Forbidden } from 'payload';
 
-import { BeforeOperationHookBuilder } from './beforeOperationHookBuilder';
-import insertBeforeOperationHook from './insertBeforeOperationHook';
+import type { reCAPTCHAErrorHandler, reCAPTCHAPluginConfig } from './types.js';
+import hookBuilder from './hookBuilder.js';
+
+const defaultErrorHandler: reCAPTCHAErrorHandler = () => {
+	throw new Forbidden();
+};
 
 const reCAPTCHAv3: (pluginConfig: reCAPTCHAPluginConfig) => Plugin =
-	(pluginConfig: reCAPTCHAPluginConfig) =>
+	({ secret, errorHandler, skip }: reCAPTCHAPluginConfig) =>
 	(incomingConfig: Config): Config => {
-		const hookBuilder = new BeforeOperationHookBuilder().setSecret(pluginConfig.secret);
-		const newConfig = insertBeforeOperationHook(incomingConfig, hookBuilder);
-		return newConfig;
+		const { cors } = incomingConfig;
+
+		const headers =
+			typeof cors === 'object' && 'headers' in cors
+				? cors.headers || []
+				: [];
+
+		const origins =
+			cors === '*'
+				? '*'
+				: Array.isArray(cors)
+					? cors
+					: typeof cors === 'object' && 'origins' in cors
+						? cors.origins
+						: [];
+
+		return {
+			...(incomingConfig || {}),
+			collections: (incomingConfig.collections || []).map(
+				(collection) => {
+					if (collection.custom?.recaptcha) {
+						return {
+							...(collection || {}),
+							hooks: {
+								...(collection.hooks || {}),
+								beforeOperation: [
+									...(collection.hooks?.beforeOperation ||
+										[]),
+									hookBuilder({
+										secret,
+										operations: collection.custom.recaptcha,
+										errorHandler:
+											errorHandler || defaultErrorHandler,
+										skip,
+									}),
+								],
+							},
+						};
+					}
+
+					return collection;
+				},
+			),
+			cors: {
+				origins: origins,
+				headers: [...headers, 'x-recaptcha-v3'],
+			},
+		};
 	};
 
 export default reCAPTCHAv3;

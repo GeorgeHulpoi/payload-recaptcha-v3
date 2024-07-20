@@ -1,92 +1,61 @@
-import type { Server } from 'http';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import path from 'path';
-import payload from 'payload';
-import axios from 'axios';
+import { test, expect } from '@playwright/test';
 
-import { start } from './dev/server';
-
-describe('Plugin tests', () => {
-	let mongod: MongoMemoryServer;
-	let server: Server;
-
-	beforeAll(async () => {
-		mongod = await MongoMemoryServer.create();
-
-		process.env.PAYLOAD_CONFIG_PATH = path.join(__dirname, 'dev', 'payload.config.ts');
-		process.env.MONGODB_URI = mongod.getUri();
-
-		server = await start({ local: false });
+test('should throw 403 when is no token provided', async ({ request }) => {
+	const res = await request.post(`/api/test`, {
+		data: {
+			name: 'test',
+		},
 	});
+	expect(res.status()).toEqual(403);
+});
 
-	afterEach(() => {
-		jest.clearAllMocks();
-		jest.resetAllMocks();
-	});
+test('should throw 403 when when the action is not the same', async ({
+	page,
+}) => {
+	const resPromise = page.waitForResponse('/api/test');
+	await page.goto('/');
+	await page.getByTestId('create_bad_action').click();
+	const res = await resPromise;
+	expect(res.status()).toEqual(403);
+});
 
-	afterAll(async () => {
-		await mongod.stop();
-		server.close();
-	});
+test('should create', async ({ page }) => {
+	const resPromise = page.waitForResponse('/api/test');
+	await page.goto('/');
+	await page.getByTestId('create').click();
+	const res = await resPromise;
+	expect(res.status()).toEqual(201);
+});
 
-	it("shouldn't call Google reCAPTCHA while using Local", async () => {
-		const post = jest.spyOn(global, 'fetch');
+test('should create with skip', async ({ page }) => {
+	const resPromise = page.waitForResponse('/api/test');
+	await page.goto('/');
+	await page.getByTestId('create_skip').click();
+	const res = await resPromise;
+	expect(res.status()).toEqual(201);
+});
 
-		await payload.create({
-			collection: 'test',
-			data: {
-				name: 'rest',
-			},
-		});
-
-		expect(post).toHaveBeenCalledTimes(0);
-	});
-
-	it("shouldn't call Google reCAPTCHA when using GraphQL", async () => {
-		const post = jest.spyOn(global, 'fetch');
-
-		await axios.post('http://localhost:3000/api/graphql', {
+test('should create with GraphQL', async ({ request }) => {
+	const res = await request.post(`/api/graphql`, {
+		data: {
 			query: `mutation { createTest(data: {name: "abc"}) { id, name } }`,
-		});
-
-		expect(post).toHaveBeenCalledTimes(0);
+		},
+		headers: {
+			'Content-Type': 'application/json',
+		},
 	});
+	expect(res.status()).toEqual(200);
+});
 
-	it('should call Google reCAPTCHA when using REST', async () => {
-		const post = jest.spyOn(global, 'fetch').mockImplementation(() =>
-			Promise.resolve({
-				ok: true,
-				json: () => ({
-					action: 'create_test',
-					success: true,
-				}),
-			} as any),
-		);
-
-		await axios.post(
-			'http://localhost:3000/api/test',
-			{ name: 'bla' },
-			{
-				headers: {
-					'X-reCAPTCHA-V3': 'token',
-				},
-			},
-		);
-
-		expect(post).toHaveBeenCalledTimes(1);
-	});
-
-	// it('should throw Forbidden by default', async () => {
-	// 	const response = await axios.post(
-	// 		'http://localhost:3000/api/test',
-	// 		{ name: 'bla' },
-	// 		{
-	// 			headers: {
-	// 				'X-reCAPTCHA-V3': 'token',
-	// 			},
-	// 		},
-	// 	);
-
-	// 	expect(response.status).toEqual(403);
-	// });
+test('should contain `x-recaptcha-v3` in Access-Control-Allow-Headers', async ({
+	request,
+}) => {
+	const res = await request.get(`/api/test`);
+	const headers = res.headers();
+	expect(headers).toBeDefined();
+	const acah =
+		headers['access-control-allow-headers'] ||
+		headers['Access-Control-Allow-Headers'];
+	expect(acah).toBeDefined();
+	expect(acah.split(',').map((v) => v.trim())).toContain('x-recaptcha-v3');
 });

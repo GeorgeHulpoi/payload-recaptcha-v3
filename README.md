@@ -4,7 +4,7 @@
 [![CI](https://github.com/GeorgeHulpoi/payload-recaptcha-v3/workflows/Test/badge.svg?branch=main)](https://github.com/GeorgeHulpoi/payload-recaptcha-v3/actions?query=workflow%3ATest)
 [![Downloads](http://img.shields.io/npm/dm/payload-recaptcha-v3.svg)](https://www.npmjs.com/package/payload-recaptcha-v3)
 
-A plugin for [Payload](https://github.com/payloadcms/payload) to protect collection's operations using Google reCAPTCHA v3.
+Payload reCAPTCHA v3 is a plugin for [Payload](https://github.com/payloadcms/payload) used to protect collection operations with Google reCAPTCHA v3.
 
 ## Installation
 
@@ -12,39 +12,42 @@ Please install the plugin version according to the Payload version. **The major 
 
 ```shell
 yarn add payload-recaptcha-v3
-# OR
+```
+
+```shell
 npm i payload-recaptcha-v3
+```
+
+```shell
+pnpm add payload-recaptcha-v3
 ```
 
 ## Configuration
 
-In the `plugins` array of your [Payload config](https://payloadcms.com/docs/configuration/overview), call the plugin with [options](#plugin-options):
+In the `plugins` property of [Payload config](https://payloadcms.com/docs/configuration/overview), call the plugin with the following [options](#plugin-options):
 
 ```ts
-import { buildConfig } from 'payload/config';
+import { buildConfig } from 'payload';
 import reCAPTCHAv3 from 'payload-recaptcha-v3';
 
-const config = buildConfig({
+export default buildConfig({
 	// ... rest of your config
 	plugins: [
 		reCAPTCHAv3({
-			secret: process.env.GOOGLE_RECAPTCHA_SECRET,
+			secret: process.env.GOOGLE_RECAPTCHA_SECRET!,
 		}),
 	],
 });
-
-export default config;
 ```
 
 ### Plugin Options
 
 -   `secret`: string
-
     Required. Your Google reCAPTCHA v3 secret key.
-
 -   `errorHandler`: [reCAPTCHAErrorHandler](#recaptchaerrorhandler)
-
-    Optional. The function that throws the exception. By default, it throws Forbidden when the response from Google is not a success.
+    Optional. [See more details](#recaptchaerrorhandler)
+-   `skip`: [reCAPTCHASkip](#recaptchaskip)
+    Optional. [See more details](#recaptchaskip)
 
 ## Usage
 
@@ -52,7 +55,7 @@ To protect a collection's operation, you have to add in the [Collection Config](
 The `recaptcha` property has to be an array of strings containing the operation name according to [Available Collection operations](https://payloadcms.com/docs/hooks/collections#beforeoperation).
 
 ```ts
-import { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload';
 
 export const Orders: CollectionConfig = {
 	slug: 'orders',
@@ -75,7 +78,7 @@ export const Orders: CollectionConfig = {
 export default Orders;
 ```
 
-Then, when you make an HTTP Request to the Payload API, include the header `X-reCAPTCHA-V3` with the token received from Google:
+Then, when you make an HTTP Request to the Payload API, include the header `x-recaptcha-v3` with the token received from Google:
 
 ```js
    <script>
@@ -86,7 +89,7 @@ Then, when you make an HTTP Request to the Payload API, include the header `X-re
             fetch('/api/orders', {
               method: 'POST',
               headers: {
-                'X-reCAPTCHA-V3': token
+                'x-recaptcha-v3': token
               },
               body: JSON.stringify({...})
             })
@@ -96,22 +99,79 @@ Then, when you make an HTTP Request to the Payload API, include the header `X-re
   </script>
 ```
 
+Optionally, you can set a `errorHandler` or `skip` as described in [Plugin Options](#plugin-options) in a specific operation.
+
+```ts
+import type { CollectionConfig } from 'payload';
+
+export const Orders: CollectionConfig = {
+	slug: 'orders',
+	fields: [],
+	// ... rest of your config
+	custom: {
+		recaptcha: [
+			{
+				name: 'create',
+				action: 'submit',
+				errorHandler: (args) => {
+					// ...
+				},
+			},
+			{
+				name: 'update',
+				action: 'modify',
+				skip: (args) => {
+					// ....
+				},
+			},
+		],
+	},
+};
+
+export default Orders;
+```
+
 ## Tests
 
-Tests are using Jest, to run the tests use:
+This plugin uses Playwright for end-to-end testing with Google reCAPTCHA directly. However, there are some steps to test the plugin.
 
-```shell
-npm test
-```
+1. Provide `RECAPTCHA_SECRET` and `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` environment variables.
+2. Run `pnpm build` and then `pnpm dev:build`.
+3. Run `pnpm test`.
 
 ## Types
 
-### reCAPTCHAErrorHandler
+### reCAPTCHASkip
 
-A function that has the purpose of throwing an exception depending on the response received from Google.
+A callback function that when returns true, it will skip the Google reCAPTCHA verification (for example, when the user is an admin).
+
+The arguments of function are the same of [Before Operation Hook](https://payloadcms.com/docs/hooks/collections#beforeoperation).
 
 ```ts
-type reCAPTCHAErrorHandler = (response?: reCAPTCHAResponse) => void;
+export type reCAPTCHASkip = (
+	args: Parameters<CollectionBeforeOperationHook>[0],
+) => boolean;
+```
+
+### reCAPTCHAErrorHandler
+
+A callback function that is called when:
+
+-   The header x-recaptcha-v3 is not set.
+-   The fetch request generated an error.
+-   The response from Google was not a success.
+-   The response from Google was a success, but for another action.
+
+When the errorHandler options property is not set, it will throw a Forbidden error by default.
+
+```ts
+export type reCAPTCHAErrorHandler = (args: {
+	hookArgs: Parameters<CollectionBeforeOperationHook>[0];
+	response?: reCAPTCHAResponse;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	error?: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) => any;
 ```
 
 ### reCAPTCHAResponse
@@ -139,4 +199,4 @@ The response received from Google when verifying the token.
 | invalid-input-response | The response parameter is invalid or malformed.                                 |
 | bad-request            | The request is invalid or malformed.                                            |
 | timeout-or-duplicate   | The response is no longer valid: either is too old or has been used previously. |
-| invalid-keys           | Unknown                                                                         |
+| invalid-keys           | The secret key is incorrect.                                                    |

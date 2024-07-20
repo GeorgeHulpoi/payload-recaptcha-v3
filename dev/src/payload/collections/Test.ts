@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload';
 
 export const Test: CollectionConfig = {
 	slug: 'test',
@@ -19,10 +19,6 @@ export const Test: CollectionConfig = {
 			{
 				name: 'create',
 				action: 'create_test',
-			},
-			{
-				name: 'update',
-				action: 'update_test',
 			},
 		],
 	},
