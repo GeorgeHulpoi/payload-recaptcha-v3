@@ -1,6 +1,6 @@
 {
 	"name": "payload-recaptcha-v3",
-	"version": "3.0.0-beta.1",
+	"version": "3.0.0",
 	"description": "This library implements a collection protection in Payload CMS using Google reCAPTCHA v3.",
 	"license": "MIT",
 	"type": "module",
@@ -25,10 +25,6 @@
 			"import": "./dist/index.js",
 			"default": "./dist/index.js",
 			"types": "./dist/index.d.ts"
-		},
-		"./withPlugin": {
-			"import": "./dist/withPlugin.js",
-			"require": "./dist/withPlugin.js"
 		}
 	},
 	"scripts": {
@@ -57,21 +53,21 @@
 		"qs": "^6.12.1"
 	},
 	"peerDependencies": {
-		"next": "15.0.0-canary.104",
-		"payload": "3.0.0-beta.90"
+		"next": "^15.0.0",
+		"payload": "^3.0.0"
 	},
 	"devDependencies": {
-		"@payloadcms/db-mongodb": "3.0.0-beta.90",
-		"@payloadcms/next": "3.0.0-beta.90",
-		"@payloadcms/richtext-lexical": "3.0.0-beta.90",
+		"@payloadcms/db-mongodb": "^3.0.0",
+		"@payloadcms/next": "^3.0.0",
+		"@payloadcms/richtext-lexical": "^3.0.0",
 		"@playwright/test": "^1.45.1",
 		"@swc/cli": "0.3.12",
 		"@swc/jest": "0.2.36",
 		"@types/jest": "^29.5.12",
 		"@types/node": "^20.14.2",
 		"@types/qs": "^6.9.15",
-		"@types/react": "npm:types-react@19.0.0-beta.0",
-		"@types/react-dom": "npm:types-react-dom@19.0.0-beta.0",
+		"@types/react": "npm:types-react@19.0.0-rc.1",
+		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
 		"copyfiles": "^2.4.1",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -80,11 +76,11 @@
 		"husky": "^8.0.3",
 		"jest": "^29.7.0",
 		"lint-staged": "^14.0.0",
-		"next": "15.0.0-canary.104",
-		"payload": "3.0.0-beta.90",
+		"next": "^15.0.0",
+		"payload": "^3.0.0",
 		"prettier": "^3.3.2",
-		"react": "19.0.0-rc-6230622a1a-20240610",
-		"react-dom": "19.0.0-rc-6230622a1a-20240610",
+		"react": "19.0.0-rc-65a56d0e-20241020",
+		"react-dom": "19.0.0-rc-65a56d0e-20241020",
 		"rimraf": "^5.0.7",
 		"ts-node": "^10.9.2",
 		"turbo": "^2.0.6",
@@ -100,12 +96,12 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@types/react": "npm:types-react@19.0.0-rc.0",
-			"@types/react-dom": "npm:types-react-dom@19.0.0-rc.0"
+			"@types/react": "npm:types-react@19.0.0-rc.1",
+			"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
 		}
 	},
 	"overrides": {
-		"@types/react": "npm:types-react@19.0.0-rc.0",
-		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.0"
+		"@types/react": "npm:types-react@19.0.0-rc.1",
+		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
 	}
 }

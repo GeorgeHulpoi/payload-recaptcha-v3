@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { headers } from 'next/headers.js';
 import type { CollectionBeforeOperationHook } from 'payload';
 import qs from 'qs';
@@ -30,7 +28,7 @@ export default function hookBuilder({
 					return args.args;
 				}
 
-				const headersList = headers();
+				const headersList = await headers();
 				const token = headersList.get('x-recaptcha-v3');
 
 				const errorHandlerFn = op.errorHandler || errorHandler;
