@@ -12,18 +12,21 @@ test('should throw 403 when is no token provided', async ({ request }) => {
 test('should throw 403 when when the action is not the same', async ({
 	page,
 }) => {
-	const resPromise = page.waitForResponse('/api/test');
-	await page.goto('/');
-	await page.getByTestId('create_bad_action').click();
-	const res = await resPromise;
+	await page.goto('/', { waitUntil: 'networkidle' });
+	const [res] = await Promise.all([
+		page.waitForResponse('/api/test', { timeout: 5000 }),
+		page.getByTestId('create_bad_action').click(),
+	]);
+
 	expect(res.status()).toEqual(403);
 });
 
 test('should create', async ({ page }) => {
-	const resPromise = page.waitForResponse('/api/test');
-	await page.goto('/');
-	await page.getByTestId('create').click();
-	const res = await resPromise;
+	await page.goto('/', { waitUntil: 'networkidle' });
+	const [res] = await Promise.all([
+		page.waitForResponse('/api/test', { timeout: 5000 }),
+		page.getByTestId('create').click(),
+	]);
 	expect(res.status()).toEqual(201);
 });
 
