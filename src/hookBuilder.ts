@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { headers } from 'next/headers.js';
 import type { CollectionBeforeOperationHook } from 'payload';
 import qs from 'qs';
