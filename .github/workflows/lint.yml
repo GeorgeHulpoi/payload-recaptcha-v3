@@ -1,4 +1,4 @@
-name: Test
+name: Lint
 
 on:
     push:
@@ -9,10 +9,6 @@ on:
 jobs:
     install:
         runs-on: ubuntu-latest
-        env:
-            NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
-            RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
-            DATABASE_URI: 'mongodb://127.0.0.1/payload-recaptcha-v3'
         steps:
             - uses: actions/checkout@v2
             - uses: pnpm/action-setup@v4
@@ -24,10 +20,4 @@ jobs:
                   node-version: 20
                   cache: 'pnpm'
             - run: pnpm install
-            - run: pnpm build
-            - run: pnpm dev:build
-            - uses: supercharge/mongodb-github-action@1.11.0
-              with:
-                  mongodb-version: '7.0'
-            - run: pnpm exec playwright install
-            - run: pnpm test
+            - run: pnpm lint

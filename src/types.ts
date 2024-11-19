@@ -1,18 +1,25 @@
-export interface reCAPTCHAPluginConfig {
-	secret: string;
+import type { CollectionBeforeOperationHook, Operation } from 'payload';
+
+export type reCAPTCHASkip = (
+	args: Parameters<CollectionBeforeOperationHook>[0],
+) => boolean;
+
+export interface reCAPTCHAConfig {
 	errorHandler?: reCAPTCHAErrorHandler;
+	skip?: reCAPTCHASkip;
 }
 
-export type reCAPTCHAErrorHandler = (response?: reCAPTCHAResponse) => void;
+export interface reCAPTCHAPluginConfig extends reCAPTCHAConfig {
+	secret: string;
+}
 
-export type reCAPTCHAOperations =
-	| 'create'
-	| 'read'
-	| 'update'
-	| 'delete'
-	| 'login'
-	| 'refresh'
-	| 'forgotPassword';
+export type reCAPTCHAErrorHandler = (args: {
+	hookArgs: Parameters<CollectionBeforeOperationHook>[0];
+	response?: reCAPTCHAResponse;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	error?: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) => any;
 
 export type reCAPTCHAErrorCode =
 	| 'missing-input-secret'
@@ -32,7 +39,22 @@ export interface reCAPTCHAResponse {
 	'error-codes'?: reCAPTCHAErrorCode[];
 }
 
-export interface reCAPTCHAOperation {
-	name: reCAPTCHAOperations;
+export interface reCAPTCHAOperation extends reCAPTCHAConfig {
+	name: Operation;
 	action: string;
 }
+
+export type HookBuilderArgs = {
+	secret: string;
+	operations: reCAPTCHAOperation[];
+	errorHandler: reCAPTCHAErrorHandler;
+	skip?: reCAPTCHASkip;
+};
+
+// declare module 'payload' {
+// 	export type CollectionConfig = {
+// 		custom?: {
+// 			recaptcha: reCAPTCHAOperation[];
+// 		};
+// 	};
+// }

@@ -34,10 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
 .eslintcache
 /*.tgz
 /dist
 dev/.next
 .swc
-.turbo
