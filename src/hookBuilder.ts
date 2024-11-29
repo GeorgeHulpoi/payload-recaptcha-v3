@@ -9,6 +9,7 @@ export default function hookBuilder({
 	operations,
 	errorHandler,
 	skip,
+	scoreThreshold,
 }: HookBuilderArgs): CollectionBeforeOperationHook {
 	return async (args) => {
 		const {
@@ -23,6 +24,7 @@ export default function hookBuilder({
 		if (op) {
 			if (payloadAPI === 'REST') {
 				const skipFn = op.skip || skip;
+				const scoreThresholdValue = op.scoreThreshold || scoreThreshold;
 
 				if (skipFn && skipFn(args)) {
 					return args.args;
@@ -72,7 +74,8 @@ export default function hookBuilder({
 				if (
 					!response ||
 					response.success === false ||
-					response.action !== op.action
+					response.action !== op.action ||
+					response.score < scoreThresholdValue
 				) {
 					return errorHandlerFn({
 						hookArgs: args,
