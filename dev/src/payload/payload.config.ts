@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 
 import reCAPTCHAv3 from '../../../dist/index';
 import { Test } from './collections/Test';
+import { Test2 } from './collections/Test2';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -14,7 +15,7 @@ export default buildConfig({
 	admin: {
 		disable: true,
 	},
-	collections: [Test],
+	collections: [Test, Test2],
 	telemetry: false,
 	secret: 'a-very-secure-secret-lol',
 	typescript: {
@@ -30,6 +31,7 @@ export default buildConfig({
 				return req.headers.get('x-skip') === 'blabla';
 			},
 			secret: process.env.RECAPTCHA_SECRET!,
+			scoreThreshold: 0,
 		}),
 	],
 });

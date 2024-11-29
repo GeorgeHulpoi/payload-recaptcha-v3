@@ -62,3 +62,15 @@ test('should contain `x-recaptcha-v3` in Access-Control-Allow-Headers', async ({
 	expect(acah).toBeDefined();
 	expect(acah.split(',').map((v) => v.trim())).toContain('x-recaptcha-v3');
 });
+
+test('should throw 403 when when the score is below threshold', async ({
+	page,
+}) => {
+	await page.goto('/', { waitUntil: 'networkidle' });
+	const [res] = await Promise.all([
+		page.waitForResponse('/api/test2', { timeout: 5000 }),
+		page.getByTestId('create-test-2-score').click(),
+	]);
+
+	expect(res.status()).toEqual(403);
+});

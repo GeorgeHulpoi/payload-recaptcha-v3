@@ -48,6 +48,8 @@ export default buildConfig({
     Optional. [See more details](#recaptchaerrorhandler)
 -   `skip`: [reCAPTCHASkip](#recaptchaskip)
     Optional. [See more details](#recaptchaskip)
+-   `scoreThreshold`: number
+	Optional. A value between 0 and 1 (default is 0.7). The received score from Google reCAPTCHA must be greater or equal than threshold.
 
 ## Usage
 
@@ -124,6 +126,11 @@ export const Orders: CollectionConfig = {
 					// ....
 				},
 			},
+			{
+				name: 'delete',
+				action: 'delete',
+				scoreThreshold: 0.9,
+			}
 		],
 	},
 };
@@ -135,7 +142,7 @@ export default Orders;
 
 This plugin uses Playwright for end-to-end testing with Google reCAPTCHA directly. However, there are some steps to test the plugin.
 
-1. Provide `RECAPTCHA_SECRET` and `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` environment variables.
+1. Provide `DATABASE_URI`, `RECAPTCHA_SECRET` and `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` environment variables.
 2. Run `pnpm build` and then `pnpm dev:build`.
 3. Run `pnpm test`.
 

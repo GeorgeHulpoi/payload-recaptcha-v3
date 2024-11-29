@@ -8,7 +8,7 @@ const defaultErrorHandler: reCAPTCHAErrorHandler = () => {
 };
 
 const reCAPTCHAv3: (pluginConfig: reCAPTCHAPluginConfig) => Plugin =
-	({ secret, errorHandler, skip }: reCAPTCHAPluginConfig) =>
+	({ secret, errorHandler, skip, scoreThreshold }: reCAPTCHAPluginConfig) =>
 	(incomingConfig: Config): Config => {
 		const { cors } = incomingConfig;
 
@@ -44,6 +44,7 @@ const reCAPTCHAv3: (pluginConfig: reCAPTCHAPluginConfig) => Plugin =
 										errorHandler:
 											errorHandler || defaultErrorHandler,
 										skip,
+										scoreThreshold: scoreThreshold || 0.7,
 									}),
 								],
 							},

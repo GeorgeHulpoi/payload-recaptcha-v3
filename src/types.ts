@@ -7,6 +7,7 @@ export type reCAPTCHASkip = (
 export interface reCAPTCHAConfig {
 	errorHandler?: reCAPTCHAErrorHandler;
 	skip?: reCAPTCHASkip;
+	scoreThreshold?: number;
 }
 
 export interface reCAPTCHAPluginConfig extends reCAPTCHAConfig {
@@ -49,6 +50,7 @@ export type HookBuilderArgs = {
 	operations: reCAPTCHAOperation[];
 	errorHandler: reCAPTCHAErrorHandler;
 	skip?: reCAPTCHASkip;
+	scoreThreshold: number;
 };
 
 // declare module 'payload' {

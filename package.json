@@ -1,6 +1,6 @@
 {
 	"name": "payload-recaptcha-v3",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "This library implements a collection protection in Payload CMS using Google reCAPTCHA v3.",
 	"license": "MIT",
 	"type": "module",
