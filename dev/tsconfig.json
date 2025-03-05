@@ -1,31 +1,21 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"noEmit": true,
-		"esModuleInterop": true,
-		"module": "esnext",
-		"moduleResolution": "bundler",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"incremental": true,
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"target": "ES2017"
-	},
+	"extends": "../tsconfig.json",
+	"exclude": [],
 	"include": [
-		"next-env.d.ts",
-		"global.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
-		".next/types/**/*.ts"
+		"../src/**/*.ts",
+		"../src/**/*.tsx",
+		"next.config.mjs",
+		".next/types/**/*.ts",
+		"app/(payload)/admin/importMap.js"
 	],
-	"exclude": ["node_modules", "**/*.test.ts"]
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@payload-config": ["./src/payload/payload.config.ts"],
+			"payload-recaptcha-v3": ["../src/index.ts"],
+		},
+		"noEmit": true
+	}
 }

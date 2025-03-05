@@ -1,6 +1,6 @@
 'use client';
 
-import { getToken } from './gRECAPTCHA';
+import { getToken } from './gRECAPTCHA.js';
 
 export default function CreateTest2Score() {
 	const create = () => {
