@@ -8,7 +8,15 @@
 			"tsx": true,
 			"dts": true
 		},
-		"baseUrl": "./"
+		"transform": {
+			"react": {
+				"runtime": "automatic",
+				"pragmaFrag": "React.Fragment",
+				"throwIfNamespace": true,
+				"development": false,
+				"useBuiltins": true
+			}
+		}
 	},
 	"module": {
 		"type": "es6"

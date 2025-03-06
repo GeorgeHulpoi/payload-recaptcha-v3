@@ -1,27 +1,26 @@
 /* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
 /* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
-import type { Metadata } from 'next';
+import type { Metadata } from 'next'
 
-import config from '../../../../payload/payload.config';
-import { RootPage, generatePageMetadata } from '@payloadcms/next/views';
-import { importMap } from '../importMap';
+import config from '@payload-config'
+import { generatePageMetadata, RootPage } from '@payloadcms/next/views'
+
+import { importMap } from '../importMap.js'
 
 type Args = {
 	params: Promise<{
-		segments: string[];
-	}>;
+		segments: string[]
+	}>
 	searchParams: Promise<{
-		[key: string]: string | string[];
-	}>;
-};
+		[key: string]: string | string[]
+	}>
+}
 
-export const generateMetadata = ({
-	params,
-	searchParams,
-}: Args): Promise<Metadata> =>
-	generatePageMetadata({ config, params, searchParams });
+export const generateMetadata = ({ params, searchParams }: Args): Promise<Metadata> =>
+	generatePageMetadata({ config, params, searchParams })
 
 const Page = ({ params, searchParams }: Args) =>
-	RootPage({ config, params, searchParams, importMap });
+	RootPage({ config, importMap, params, searchParams })
 
-export default Page;
+// eslint-disable-next-line no-restricted-exports
+export default Page

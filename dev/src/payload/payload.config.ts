@@ -3,10 +3,10 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { buildConfig } from 'payload';
 import { fileURLToPath } from 'url';
+import reCAPTCHAv3 from 'payload-recaptcha-v3';
 
-import reCAPTCHAv3 from '../../../dist/index';
-import { Test } from './collections/Test';
-import { Test2 } from './collections/Test2';
+import { Test } from './collections/Test.js';
+import { Test2 } from './collections/Test2.js';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
